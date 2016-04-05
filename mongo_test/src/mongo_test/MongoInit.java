@@ -15,10 +15,8 @@ public class MongoInit {
 
 	private static final Logger log = LoggerFactory.getLogger(MongoInit.class);
 
-	public void init() {
-		if (MongoInstance.isFulled()) {
-			return;
-		}
+	public static DB init() {
+	
 		log.info("读取mongo配置信息");
 		String ip = MongoConfig.ip;
 		int port = MongoConfig.port;
@@ -29,15 +27,13 @@ public class MongoInit {
 			addessOne = new ServerAddress(ip, port);
 		} catch (UnknownHostException e) {
 			log.error("未知的mongo地址");
-			return;
+			return null;
 		}
 		serverAddress.add(addessOne);
 		log.info("mongo初始化");
 		MongoClient mongoClient = new MongoClient(serverAddress);
 		DB db = mongoClient.getDB(dbName);
 		log.info("mongo初始化完成");
-		MongoInstance.setDb(db);
-		MongoInstance.setMongClient(mongoClient);
-		log.info("填充MongoInstance");
+		return db;
 	}
 }
